@@ -83,7 +83,7 @@ public class CryptoToolGUI {
                     result = "Operation with " + selectedAlgorithm + " on input '" + inputText + "' completed.";
                 }
 
-                System.out.println("Result: " + result); // Debugging line
+                System.out.println("Result: " + result);
                 finalResultArea.setText(result);
                 finalResultArea.setText(result); // Set the text to resultArea
                 finalResultArea.repaint(); // Force the resultArea to repaint
