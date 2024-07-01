@@ -36,7 +36,7 @@ public class CryptoToolGUI {
         frame.add(inputField);
         frame.add(executeButton);
 
-        // Ensure resultArea is properly initialized and added to the frame
+        // Ensure resultArea is properly initialized and adding to the frame
         resultArea = new JTextArea(10, 15); // Adjusted size, reduced rows and columns
         resultArea.setMargin(new Insets(5, 5, 5, 5)); // Add some margin to start text from top
         resultArea.setLineWrap(true);
