@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -63,11 +65,20 @@ public class CryptoToolGUI {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         frame.add(executeButton, gbc);
-        frame.add(executeButton, gbc);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         frame.add(scrollPane, gbc);
+
+        // Copy button
+        JButton copyButton = new JButton("Copy");
+        copyButton.addActionListener(e -> {
+            String text = resultArea.getText();
+            StringSelection stringSelection = new StringSelection(text);
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(stringSelection, null);
+        });
+        frame.add(copyButton, gbc); // Add copy button to the frame
 
         // Encryption Algorithms Map
         Map<String, String[]> algorithmsMap = new HashMap<>();
@@ -321,6 +332,37 @@ public class CryptoToolGUI {
                 finalResultArea.setText(result);
                 finalResultArea.repaint(); // Force the resultArea to repaint
                 frame.validate(); // Force the frame to re-layout its components
+            }
+        });
+
+        copyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Assuming 'encryptedText' is a String containing the text to be copied
+                String encryptedText = "Your encrypted text here"; // Replace with actual encrypted text variable
+                StringSelection stringSelection = new StringSelection(encryptedText);
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clipboard.setContents(stringSelection, null);
+
+                // Show popup message
+                JDialog popup = new JDialog();
+                popup.setSize(300, 100);
+                popup.setLayout(new BorderLayout());
+                JLabel messageLabel = new JLabel("Encrypted text has been copied to your clipboard", SwingConstants.CENTER);
+                popup.add(messageLabel, BorderLayout.CENTER);
+                popup.setLocationRelativeTo(frame); // Center the popup relative to the main frame
+                popup.setUndecorated(true); // Remove window decorations
+                popup.setOpacity(0.8f); // Make slightly transparent
+                popup.setVisible(true);
+
+                // Use a Timer to make the popup disappear after 2 seconds
+                new Timer(2000, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        popup.setVisible(false);
+                        popup.dispose(); // Free resources and remove the popup
+                    }
+                }).start(); // Start the timer
             }
         });
 
