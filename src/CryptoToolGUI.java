@@ -49,13 +49,13 @@ public class CryptoToolGUI {
         frame.add(algorithmDropdown, gbc);
 
         // Adjustments for GridBagConstraints
-        gbc.gridwidth = GridBagConstraints.RELATIVE; // This makes the next component (inputField) to be at the second last column
+        gbc.gridwidth = GridBagConstraints.RELATIVE;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0; // Allows inputField to expand and fill space
+        gbc.weightx = 1.0;
         frame.add(inputField, gbc);
-        gbc.gridwidth = GridBagConstraints.REMAINDER; // This makes the clearButton to be at the last column
-        gbc.fill = GridBagConstraints.NONE; // Prevents the clearButton from expanding
-        gbc.weightx = 0; // No extra horizontal space allocation for the clear button
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
         frame.add(clearButton, gbc);
 
         // Reset gbc settings for the next components
@@ -67,7 +67,7 @@ public class CryptoToolGUI {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        frame.add(scrollPane, gbc); // ScrollPane with expanded weight
+        frame.add(scrollPane, gbc);
 
         // Encryption Algorithms Map
         Map<String, String[]> algorithmsMap = new HashMap<>();
@@ -146,106 +146,175 @@ public class CryptoToolGUI {
                 System.out.println("Input Text: " + inputText); // Debugging line
                 String result = "Unsupported algorithm or operation failed."; // Default message
 
-                if ("DES".equals(selectedAlgorithm)) {
-                    result = "DES Encrypted Output: \n" + DESEncryptor.encrypt(inputText);
-                } else if ("AES".equals(selectedAlgorithm)) {
-                    try {
-                        result = "AES Encrypted Output: \n" + AESEncryptor.encrypt(inputText);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        result = "AES operation failed.";
+
+                switch (selectedAlgorithm) {
+                    // DES Algo Call
+                    case "DES" ->
+                        //result = "DES Encrypted Output: \n" + DESEncryptor.encrypt(inputText);
+                            result = DESEncryptor.encrypt(inputText);
+
+                    // AES Algo Call
+                    case "AES" -> {
+                        try {
+                            //result = "AES Encrypted Output: \n" + AESEncryptor.encrypt(inputText);
+                            result = AESEncryptor.encrypt(inputText);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            result = "AES operation failed.";
+                        }
                     }
-                } else if ("3DES".equals(selectedAlgorithm)) {
-                    result = "3DES Encrypted Output: \n" + DES3Encryptor.encrypt(inputText);
-                } else if ("Blowfish".equals(selectedAlgorithm)) {
-                    result = "Blowfish Encrypted Output: \n" + BlowfishEncryptor.encrypt(inputText);
-                } else if ("Twofish".equals(selectedAlgorithm)) {
-                    String keyFile = "src/keys/twofish_key.bin";
-                    twofishKeyGenerator.generateTwofishKey(keyFile);
-                    try {
-                        // Read the key from the file
-                        byte[] keyBytes = Files.readAllBytes(Paths.get(keyFile));
-                        String key = new String(keyBytes);
-                        // Encrypt the input text using the TwofishEncryptor
-                        result = "Twofish Encrypted Output: \n" + TwofishEncryptor.encrypt(inputText, key);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                        result = "Twofish operation failed.";
+
+                    // 3DES Algo call
+                    case "3DES" ->
+                        //result = "3DES Encrypted Output: \n" + DES3Encryptor.encrypt(inputText);
+                            result = DES3Encryptor.encrypt(inputText);
+
+
+                    // Blowfish Algo Call
+                    case "Blowfish" ->
+                        //result = "Blowfish Encrypted Output: \n" + BlowfishEncryptor.encrypt(inputText);
+                            result = BlowfishEncryptor.encrypt(inputText);
+
+
+                    // Twofish Algo Call
+                    case "Twofish" -> {
+                        String keyFile = "src/keys/twofish_key.bin";
+                        twofishKeyGenerator.generateTwofishKey(keyFile);
+                        try {
+                            // Read the key from the file
+                            byte[] keyBytes = Files.readAllBytes(Paths.get(keyFile));
+                            String key = new String(keyBytes);
+                            // Encrypt the input text using the TwofishEncryptor
+                            //result = "Twofish Encrypted Output: \n" + TwofishEncryptor.encrypt(inputText, key);
+                            result = TwofishEncryptor.encrypt(inputText, key);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                            result = "Twofish operation failed.";
+                        }
                     }
-                } else if ("IDEA".equals(selectedAlgorithm)) {
-                    try {
-                        result = "IDEA Encrypted Output: \n" + IDEAEncryptor.encrypt(inputText);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        result = "IDEA operation failed.";
+
+                    // IDEA Algo Call
+                    case "IDEA" -> {
+                        try {
+                            //result = "IDEA Encrypted Output: \n" + IDEAEncryptor.encrypt(inputText);
+                            result = IDEAEncryptor.encrypt(inputText);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            result = "IDEA operation failed.";
+                        }
                     }
-                } else if ("RC4".equals(selectedAlgorithm)) {
-                    try {
-                        rc4KeyGenUtil.generateAndSaveRC4Key();
-                    } catch (NoSuchAlgorithmException | IOException ex) {
-                        throw new RuntimeException(ex);
+
+                    // RC4 Algo Call
+                    case "RC4" -> {
+                        try {
+                            rc4KeyGenUtil.generateAndSaveRC4Key();
+                        } catch (NoSuchAlgorithmException | IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        //result = "RC4 Encrypted Output: \n" + RC4Encryptor.encrypt(inputText);
+                        result = RC4Encryptor.encrypt(inputText);
                     }
-                    result = "RC4 Encrypted Output: \n" + RC4Encryptor.encrypt(inputText);
-                } else if ("RSA".equals(selectedAlgorithm)) {
-                    try {
-                        RSAEncryptor.generateKeyPair();
-                        result = "RSA Encrypted Output: \n" + RSAEncryptor.encrypt(inputText);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        result = "RSA operation failed.";
+
+                    // RSA Algo Call
+                    case "RSA" -> {
+                        try {
+                            RSAEncryptor.generateKeyPair();
+                            //result = "RSA Encrypted Output: \n" + RSAEncryptor.encrypt(inputText);
+                            result = RSAEncryptor.encrypt(inputText);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            result = "RSA operation failed.";
+                        }
                     }
-                } else if ("ECC".equals(selectedAlgorithm)) {
-                    try {
-                        ECCEncryptor.initializeKeyPair();
-                    } catch (Exception ex) {
-                        throw new RuntimeException(ex);
+
+                    // ECC Algo Call
+                    case "ECC" -> {
+                        try {
+                            ECCEncryptor.initializeKeyPair();
+                        } catch (Exception ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        //result = "ECC Encrypted Output: \n" + ECCEncryptor.encrypt(inputText);
+                        result = ECCEncryptor.encrypt(inputText);
                     }
-                    result = "ECC Encrypted Output: \n" + ECCEncryptor.encrypt(inputText);
-                } else if ("ElGamal".equals(selectedAlgorithm)) {
-                    ElGamalKeyManager elGamalKeyManager = new ElGamalKeyManager();
-                    result = "ElGamal Encrypted Output: \n" + ElGamalEncryptor.encrypt(inputText, elGamalKeyManager);
-                } else if ("DSA".equals(selectedAlgorithm)) {
-                    try {
-                        KeyPair keyPair = DSAEncryptor.generateKeyPair();
-                        String signature = DSAEncryptor.sign(inputText, keyPair.getPrivate());
-                        boolean isVerified = DSAEncryptor.verify(inputText, signature, keyPair.getPublic());
-                        result = "DSA Signature: \n" + signature + "\nVerification: " + isVerified;
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        result = "DSA operation failed.";
+
+                    // ElGamal Algo Call
+                    case "ElGamal" -> {
+                        ElGamalKeyManager elGamalKeyManager = new ElGamalKeyManager();
+                        //result = "ElGamal Encrypted Output: \n" + ElGamalEncryptor.encrypt(inputText, elGamalKeyManager);
+                        result = ElGamalEncryptor.encrypt(inputText, elGamalKeyManager);
                     }
-                } else if ("SHA-1".equals(selectedAlgorithm)) {
-                    try {
-                        result = "SHA-1 Encrypted Output: \n" + SHA1Encryptor.encrypt(inputText);
-                    } catch (NoSuchAlgorithmException ex) {
-                        ex.printStackTrace();
-                        result = "SHA-1 operation failed.";
+
+                    // DSA Algo Call
+                    case "DSA" -> {
+                        try {
+                            KeyPair keyPair = DSAEncryptor.generateKeyPair();
+                            String signature = DSAEncryptor.sign(inputText, keyPair.getPrivate());
+                            boolean isVerified = DSAEncryptor.verify(inputText, signature, keyPair.getPublic());
+                            //result = "DSA Signature: \n" + signature + "\nVerification: " + isVerified;
+                            result = signature;
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            result = "DSA operation failed.";
+                        }
                     }
-                } else if ("SHA-256".equals(selectedAlgorithm)) {
-                    result = "SHA-256 Encrypted Output: \n" + SHA256Encryptor.encrypt(inputText);
-                } else if ("SHA-3".equals(selectedAlgorithm)) {
-                    try {
-                        result = "SHA-3 Encrypted Output: \n" + SHA3Encryptor.encrypt(inputText);
-                    } catch (NoSuchAlgorithmException ex) {
-                        ex.printStackTrace();
-                        result = "SHA-3 operation failed.";
+
+                    // SHA-1 Algo Call
+                    case "SHA-1" -> {
+                        try {
+                            //result = "SHA-1 Encrypted Output: \n" + SHA1Encryptor.encrypt(inputText);
+                            result = SHA1Encryptor.encrypt(inputText);
+                        } catch (NoSuchAlgorithmException ex) {
+                            ex.printStackTrace();
+                            result = "SHA-1 operation failed.";
+                        }
                     }
-                } else if ("MD5".equals(selectedAlgorithm)) {
-                    try {
-                        result = "MD5 Encrypted Output: \n" + MD5Encryptor.encrypt(inputText);
-                    } catch (NoSuchAlgorithmException ex) {
-                        ex.printStackTrace();
-                        result = "MD5 operation failed.";
+
+                    // SHA-256 Algo Call
+                    case "SHA-256" ->
+                        //result = "SHA-256 Encrypted Output: \n" + SHA256Encryptor.encrypt(inputText);
+                            result = SHA256Encryptor.encrypt(inputText);
+
+
+                    // SHA-3 Algo Call
+                    case "SHA-3" -> {
+                        try {
+                            //result = "SHA-3 Encrypted Output: \n" + SHA3Encryptor.encrypt(inputText);
+                            result = SHA3Encryptor.encrypt(inputText);
+                        } catch (NoSuchAlgorithmException ex) {
+                            ex.printStackTrace();
+                            result = "SHA-3 operation failed.";
+                        }
                     }
-                } else if ("RIPEMD".equals(selectedAlgorithm)) {
-                    try {
-                        result = "RIPEMD Encrypted Output: \n" + RIPEMDEncryptor.encrypt(inputText);
-                    } catch (NoSuchAlgorithmException ex) {
-                        ex.printStackTrace();
-                        result = "RIPEMD operation failed.";
+
+                    // MD5 Algo Call
+                    case "MD5" -> {
+                        try {
+                            //result = "MD5 Encrypted Output: \n" + MD5Encryptor.encrypt(inputText);
+                            result = MD5Encryptor.encrypt(inputText);
+                        } catch (NoSuchAlgorithmException ex) {
+                            ex.printStackTrace();
+                            result = "MD5 operation failed.";
+                        }
                     }
-                } else if ("Whirlpool".equals(selectedAlgorithm)) {
-                    result = "Whirlpool Encrypted Output: \n" + WhirlpoolEncryptor.encrypt(inputText);
+
+                    // RIPEMD Algo Call
+                    case "RIPEMD" -> {
+                        try {
+                            //result = "RIPEMD Encrypted Output: \n" + RIPEMDEncryptor.encrypt(inputText);
+                            result = RIPEMDEncryptor.encrypt(inputText);
+                        } catch (NoSuchAlgorithmException ex) {
+                            ex.printStackTrace();
+                            result = "RIPEMD operation failed.";
+                        }
+                    }
+
+                    // Whirlpool Algo Call
+                    case "Whirlpool" ->
+                        //result = "Whirlpool Encrypted Output: \n" + WhirlpoolEncryptor.encrypt(inputText);
+                            result = WhirlpoolEncryptor.encrypt(inputText);
+
+                    case null, default -> result = "ERROR, Choose a Valid Option";
                 }
 
                 System.out.println("Result: " + result);
