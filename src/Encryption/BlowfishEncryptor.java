@@ -1,19 +1,19 @@
+package Encryption;
+
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.security.SecureRandom;
 import java.util.Base64;
 
-public class DESEncryptor {
+public class BlowfishEncryptor {
     public static String encrypt(String input) {
         try {
-            // Generate a DES key.
-            KeyGenerator keyGenerator = KeyGenerator.getInstance("DES");
-            keyGenerator.init(new SecureRandom());
+            // Generate a Blowfish key.
+            KeyGenerator keyGenerator = KeyGenerator.getInstance("Blowfish");
             SecretKey secretKey = keyGenerator.generateKey();
 
-            // Initialize Cipher for DES encryption.
-            Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+            // Initialize Cipher for Blowfish encryption.
+            Cipher cipher = Cipher.getInstance("Blowfish");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
             // Encrypt the data.

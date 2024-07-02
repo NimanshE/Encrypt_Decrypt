@@ -1,3 +1,5 @@
+package Encryption;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -12,10 +14,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CryptoToolGUI {
-    public static void main(String[] args) {
+public class EncryptToolGUI extends JFrame {
+    public EncryptToolGUI() {
         // Frame setup
-        JFrame frame = new JFrame("CryptoTool");
+        JFrame frame = new JFrame("EncryptTool");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 400);
 

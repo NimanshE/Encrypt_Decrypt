@@ -1,3 +1,5 @@
+package Encryption;
+
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

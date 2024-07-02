@@ -1,3 +1,5 @@
+package Encryption;
+
 import org.bouncycastle.crypto.digests.WhirlpoolDigest;
 import org.bouncycastle.util.encoders.Hex;
 
