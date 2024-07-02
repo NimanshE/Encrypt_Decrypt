@@ -15,9 +15,9 @@ public class CryptoToolGUI {
         // Frame setup
         JFrame frame = new JFrame("CryptoTool");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 400); // Adjusted window size for a more professional look
+        frame.setSize(600, 400);
 
-        // Use GridBagLayout for flexible component arrangement
+        // GridBagLayout for flexible component arrangement
         frame.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -34,30 +34,69 @@ public class CryptoToolGUI {
         JComboBox<String> algorithmDropdown = new JComboBox<>();
         algorithmDropdown.addItem("Select Algorithm");
 
-        JTextField inputField = new JTextField(20); // Adjusted field size
+        JTextField inputField = new JTextField(20); // field size
+        JButton clearButton = new JButton("Clear");
         JButton executeButton = new JButton("Execute");
-        JTextArea resultArea = new JTextArea(8, 20); // Adjusted size for consistency
+        JTextArea resultArea = new JTextArea(8, 20);
         resultArea.setEditable(false);
-        resultArea.setMargin(new Insets(5, 5, 5, 5)); // Add some margin
+        resultArea.setMargin(new Insets(5, 5, 5, 5)); // margin
         resultArea.setLineWrap(true);
         resultArea.setWrapStyleWord(true);
         JScrollPane scrollPane = new JScrollPane(resultArea);
 
-        // Add components with GridBagConstraints
+        // Components with GridBagConstraints
         frame.add(encryptionTypeDropdown, gbc);
         frame.add(algorithmDropdown, gbc);
+
+        // Adjustments for GridBagConstraints
+        gbc.gridwidth = GridBagConstraints.RELATIVE; // This makes the next component (inputField) to be at the second last column
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0; // Allows inputField to expand and fill space
         frame.add(inputField, gbc);
+        gbc.gridwidth = GridBagConstraints.REMAINDER; // This makes the clearButton to be at the last column
+        gbc.fill = GridBagConstraints.NONE; // Prevents the clearButton from expanding
+        gbc.weightx = 0; // No extra horizontal space allocation for the clear button
+        frame.add(clearButton, gbc);
+
+        // Reset gbc settings for the next components
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        frame.add(executeButton, gbc);
         frame.add(executeButton, gbc);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        frame.add(scrollPane, gbc); // Add scrollPane with expanded weight
+        frame.add(scrollPane, gbc); // ScrollPane with expanded weight
 
         // Encryption Algorithms Map
         Map<String, String[]> algorithmsMap = new HashMap<>();
         algorithmsMap.put("Symmetric", new String[]{"DES", "AES", "3DES", "Blowfish", "Twofish", "IDEA", "RC4"});
         algorithmsMap.put("Asymmetric", new String[]{"RSA", "ECC", "ElGamal", "DSA"});
         algorithmsMap.put("Hash", new String[]{"SHA-1", "SHA-256", "SHA-3", "MD5", "RIPEMD", "Whirlpool"});
+
+        // Event Listeners
+        clearButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                inputField.setText(""); // Clear the input field
+                resultArea.setText(""); // Clear the Result area
+            }
+        });
+        encryptionTypeDropdown.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedType = (String) encryptionTypeDropdown.getSelectedItem();
+                algorithmDropdown.removeAllItems(); // Clear current items
+                algorithmDropdown.addItem("Select Algorithm"); // Reset default value
+                if (selectedType != null && !selectedType.equals("Select Encryption Type")) {
+                    for (String algorithm : algorithmsMap.getOrDefault(selectedType, new String[]{})) {
+                        algorithmDropdown.addItem(algorithm);
+                    }
+                }
+                resultArea.setText(""); // Clear the result area whenever the encryption type is changed
+            }
+        });
 
         // Event Listeners
         encryptionTypeDropdown.addActionListener(new ActionListener() {
@@ -86,6 +125,14 @@ public class CryptoToolGUI {
                         algorithmDropdown.addItem(algorithm);
                     }
                 }
+                resultArea.setText(""); // Clear the result area whenever the encryption type is changed
+            }
+        });
+
+        algorithmDropdown.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                resultArea.setText(""); // Clear the result area whenever a new algorithm is selected
             }
         });
 
